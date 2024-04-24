@@ -11,6 +11,7 @@ from aiogram.fsm.context import FSMContext
 class AddAdmin(StatesGroup):
     WaitingForPassword = State()
 
+
 # инициализируем роутер уровня модуля
 router = Router()
 
@@ -28,13 +29,14 @@ skasflkdmasdlmads
 sad
 amsdlkasflkflksmfalk'''
 database = {'1 программа': [s,
-                            r'C:\Users\Aleksandr Riabinskii\Downloads\BlbyGJ9lD1hMggBpcT73zRWJldAjmzi8p6R79gdHcwtyyskKWxqdzv0W84afrLs1gZlkDFvBn76AbGudoqbrZ_vA.jpg'], '2 программа': ['2 программа ...', r'C:\Users\Aleksandr Riabinskii\Downloads\BlbyGJ9lD1hMggBpcT73zRWJldAjmzi8p6R79gdHcwtyyskKWxqdzv0W84afrLs1gZlkDFvBn76AbGudoqbrZ_vA.jpg']}
+                            r'c:\Users\Vladimir\Downloads\kartinki-pyure-11.jpeg'], '2 программа': ['2 программа ...', r'c:\Users\Vladimir\Downloads\kartinki-pyure-11.jpeg']}
+
 
 async def build_inline_keyboard_for_products(database):
     keyboard_list = InlineKeyboardBuilder()
     for text in database:
         keyboard_list.add(InlineKeyboardButton(
-            text=text, callback_data= f'program_{text}'))
+            text=text, callback_data=f'program_{text}'))
     return keyboard_list.adjust(1).as_markup()
 
 # Создаем объект кнопок главного меню
@@ -47,17 +49,19 @@ Keyboard = ReplyKeyboardMarkup(
     keyboard=[[button_1], [button_2], [button_3]], resize_keyboard=True)
 
 
-button_vk = InlineKeyboardButton(text= 'VK', url= 'https://vk.com')
-button_tg = InlineKeyboardButton(text= 'Telegram', url= 'https://telegram.org')
-keyboard_social = InlineKeyboardMarkup(inline_keyboard= [[button_vk, button_tg]])
+button_vk = InlineKeyboardButton(text='VK', url='https://vk.com')
+button_tg = InlineKeyboardButton(text='Telegram', url='https://telegram.org')
+keyboard_social = InlineKeyboardMarkup(
+    inline_keyboard=[[button_vk, button_tg]])
 
-button_takepart = InlineKeyboardButton(text= 'Перейти на сайт', url= 'https://www.google.com')
-keyboard_takepart = InlineKeyboardMarkup(inline_keyboard= [[button_takepart]])
+button_takepart = InlineKeyboardButton(
+    text='Перейти на сайт', url='https://www.google.com')
+keyboard_takepart = InlineKeyboardMarkup(inline_keyboard=[[button_takepart]])
 
 
-@router.message(Command(commands= ['start', 'menu']))
+@router.message(Command(commands=['start', 'menu']))
 async def process_start_command(message: Message):
-    await message.answer(text='Hi', reply_markup=Keyboard)
+    await message.answer_photo(caption='Hi', photo=FSInputFile(r'c:\Users\Vladimir\Downloads\kartinki-pyure-11.jpeg'), reply_markup=Keyboard)
 
 
 @router.message(F.text == 'Программы')
@@ -67,15 +71,15 @@ async def process_menu_command(message: Message):
 
 @router.message(F.text == 'Участвовать')
 async def process_menu_command(message: Message):
-    await message.answer(text='Для участия перейдите нажмите кнопку', reply_markup= keyboard_takepart)
+    await message.answer(text='Для участия перейдите нажмите кнопку', reply_markup=keyboard_takepart)
 
 
 @router.message(F.text == 'Социальные сети')
 async def process_menu_command(message: Message):
-    await message.answer(text='Социальные сети', reply_markup= keyboard_social)
+    await message.answer(text='Социальные сети', reply_markup=keyboard_social)
 
 
-@router.message(Command(commands= ['admin']))
+@router.message(Command(commands=['admin']))
 async def process_start_command(message: Message, state: FSMContext):
     await message.answer(text='Введите пароль')
     await state.set_state(AddAdmin.WaitingForPassword)
@@ -100,9 +104,10 @@ async def process_password_input(message: Message, state: FSMContext):
     # Сброс состояния FSM
     await state.clear()
 
+
 @router.callback_query(lambda callback: callback.data.startswith("program_"))
 async def return_to_category(callback: CallbackQuery):
-    await callback.answer() # Убирает мигание инлайн кнопки
+    await callback.answer()  # Убирает мигание инлайн кнопки
     s = callback.data.strip("program_")
     data = database[s]
 
@@ -111,4 +116,4 @@ async def return_to_category(callback: CallbackQuery):
     else:
         photo = data[1]
 
-    await callback.message.answer_photo(caption= data[0], photo=photo)
+    await callback.message.answer_photo(caption=data[0], photo=photo)
