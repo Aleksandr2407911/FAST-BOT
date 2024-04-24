@@ -12,7 +12,7 @@ async def main():
     dp = Dispatcher()
 
     #регистрируем роутеры в диспетчер
-    dp.include_router(admin_module.router)
+    #dp.include_router(admin_module.router)
     dp.include_router(user_module.router)
 
     #пропускаем накопившиемя апдейты и запускаем polling
