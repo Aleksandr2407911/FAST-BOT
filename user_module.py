@@ -83,11 +83,10 @@ async def process_password_input(message: Message, state: FSMContext):
 
         await message.answer(text='Вы добавлены в список администраторов. Нажмите /start_admin')
     else:
-        await message.answer(text='Неверный пароль')
+        await message.answer(text='Неверный пароль. Для новой попытки /admin')
 
     # Сброс состояния FSM
     await state.clear()
-    await message.answer(text= str(list_of_admins[0]))
     
 @router.callback_query(lambda callback: callback.data.startswith("program_"))
 async def return_to_category(callback: CallbackQuery):
