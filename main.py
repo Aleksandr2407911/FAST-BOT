@@ -14,11 +14,11 @@ async def clear_admin_list(list_of_admins):
 async def main():
     
     #регистрируем бота и диспетчер
-    bot = Bot(token= '6982700202:AAGziEKEE79FgTdwtUjebPsfUbVcMV_w_p0')
+    bot = Bot(token= '6959535259:AAG9_n3clewzUgapOgGAcejPDRpjQ0f_C7s')
     dp = Dispatcher()
 
     #регистрируем роутеры в диспетчер
-    #dp.include_router(admin_module.router)
+    dp.include_router(admin_module.router)
     dp.include_router(user_module.router)
 
     #пропускаем накопившиемя апдейты и запускаем polling

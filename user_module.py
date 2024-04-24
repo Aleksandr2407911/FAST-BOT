@@ -94,3 +94,10 @@ async def return_to_category(callback: CallbackQuery):
     s = callback.data.strip("program_")
     data = database[s]
     await callback.message.answer_photo(caption= data[0], photo= FSInputFile(data[1]))
+
+    if '.' in data[1]:
+        photo = FSInputFile(data[1])
+    else:
+        photo = data[1]
+
+    await callback.message.answer_photo(caption= data[0], photo=photo)
