@@ -59,7 +59,7 @@ async def build_inline_keyboard_for_orders(buttons):
 @router.message(Command(commands= ['start_admin']))
 async def process_start_command(message: Message):
     print('хэндлер перехода в меню администратора сработал')
-    await message.answer(text='Вы перешли в меню редактирования', 
+    await message.answer(text='Вы перешли в меню редактирования',
                          reply_markup=Keyboard)
 
 
@@ -67,17 +67,17 @@ async def process_start_command(message: Message):
 @router.message(F.text == 'Редактировать программы')
 async def process_start_command(message: Message):
     print('хэндлер перехода в меню администратора сработал')
-    await message.answer(text='Вы перешли в меню администратора', 
+    await message.answer(text='Вы перешли в меню администратора',
                          reply_markup=await build_inline_keyboard_for_orders(buttons))
-    
+
 
 # Клавиатура для редактора
 button_change_name = InlineKeyboardButton(text='Изменить название программы', callback_data='change_name')
 button_change_text = InlineKeyboardButton(text='Изменить текст ответа', callback_data='change_text')
 button_change_picture = InlineKeyboardButton(text='Изменить картинку', callback_data='change_picture')
 
-keyboard_cd_order = InlineKeyboardMarkup(inline_keyboard=[[button_change_name], 
-                                                          [button_change_text], 
+keyboard_cd_order = InlineKeyboardMarkup(inline_keyboard=[[button_change_name],
+                                                          [button_change_text],
                                                           [button_change_picture]])
 
 # Возвращает клавиатуру редактора
@@ -123,7 +123,7 @@ async def process_start_command(message: Message, state: FSMContext):
 @router.message(AddAdmin.WaitingForName)
 async def process_password_input(message: Message, state: FSMContext):
     global buttons
-    # Ловит сообщение 
+    # Ловит сообщение
     entered = message.text.strip()
     data = await state.get_data()
     # Получаем сохраненное имя продукта из состояния
@@ -142,7 +142,7 @@ async def process_password_input(message: Message, state: FSMContext):
 @router.message(AddAdmin.WaitingForText)
 async def process_password_input(message: Message, state: FSMContext):
     global buttons
-    # Ловит сообщение 
+    # Ловит сообщение
     entered = message.text.strip()
     data = await state.get_data()
     # Получаем сохраненное имя продукта из состояния
@@ -159,12 +159,14 @@ async def process_password_input(message: Message, state: FSMContext):
 @router.message(AddAdmin.WaitingForPicture)
 async def process_password_input(message: Message, state: FSMContext):
     global buttons
-    # Ловит сообщение 
-    entered = message.text.strip()
+    # Ловит сообщение
+    #entered = message.text.strip()
+    photo = message.photo[-1].file_id
+    print(photo)
     data = await state.get_data()
     # Получаем сохраненное имя продукта из состояния
     name = data.get('data_product')[5:]
-    database[name][1] = entered
+    database[name][1] = photo
     buttons = compose_dc_for_orders(database)
 
     # Сброс состояния FSM

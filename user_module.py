@@ -15,8 +15,20 @@ class AddAdmin(StatesGroup):
 router = Router()
 
 list_of_admins = []
+s = '''fsalfkskkkkkkkkkkksksdaklsdkaldklsakdlmaskfnkgndjgnkgdsnkngds
+aglmd;lgmkdsgknadgklndslkagnlkadgnkldsamkgnmdaklgnlkadsgnkladgklmdagkdakgmakg
+dsgdg
+sGdgglmsKGMKGMSLKGDMKDSMLFMSfm;MF;LSMLDFSMDSF
+FD
+DFmfdsm;kds;FM;lfdm;ldsmfdsmf;mfsd;
 
-database = {'1 программа': ['1 программа ...', '/Users/vb/Desktop/Screenshot 2024-04-24 at 14.48.36.png'], '2 программа': ['2 программа ...', '/Users/vb/Desktop/Screenshot 2024-04-24 at 14.48.36.png']}
+as;lfmksamfksafkafsksafksamfk;lfsaml;sfmlfsmkasfkifnkfneiniwngipgm;aekmf;km
+a
+skasflkdmasdlmads
+sad
+amsdlkasflkflksmfalk'''
+database = {'1 программа': [s,
+                            r'C:\Users\Aleksandr Riabinskii\Downloads\BlbyGJ9lD1hMggBpcT73zRWJldAjmzi8p6R79gdHcwtyyskKWxqdzv0W84afrLs1gZlkDFvBn76AbGudoqbrZ_vA.jpg'], '2 программа': ['2 программа ...', r'C:\Users\Aleksandr Riabinskii\Downloads\BlbyGJ9lD1hMggBpcT73zRWJldAjmzi8p6R79gdHcwtyyskKWxqdzv0W84afrLs1gZlkDFvBn76AbGudoqbrZ_vA.jpg']}
 
 async def build_inline_keyboard_for_products(database):
     keyboard_list = InlineKeyboardBuilder()
@@ -46,7 +58,7 @@ keyboard_takepart = InlineKeyboardMarkup(inline_keyboard= [[button_takepart]])
 @router.message(Command(commands= ['start', 'menu']))
 async def process_start_command(message: Message):
     await message.answer(text='Hi', reply_markup=Keyboard)
-    
+
 
 @router.message(F.text == 'Программы')
 async def process_menu_command(message: Message):
@@ -56,7 +68,7 @@ async def process_menu_command(message: Message):
 @router.message(F.text == 'Участвовать')
 async def process_menu_command(message: Message):
     await message.answer(text='Для участия перейдите нажмите кнопку', reply_markup= keyboard_takepart)
-    
+
 
 @router.message(F.text == 'Социальные сети')
 async def process_menu_command(message: Message):
@@ -87,13 +99,12 @@ async def process_password_input(message: Message, state: FSMContext):
 
     # Сброс состояния FSM
     await state.clear()
-    
+
 @router.callback_query(lambda callback: callback.data.startswith("program_"))
 async def return_to_category(callback: CallbackQuery):
     await callback.answer() # Убирает мигание инлайн кнопки
     s = callback.data.strip("program_")
     data = database[s]
-    await callback.message.answer_photo(caption= data[0], photo= FSInputFile(data[1]))
 
     if '.' in data[1]:
         photo = FSInputFile(data[1])

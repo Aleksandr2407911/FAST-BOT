@@ -12,7 +12,7 @@ async def clear_admin_list(list_of_admins):
 
 #функция конфигурирования и запуска бота
 async def main():
-    
+
     #регистрируем бота и диспетчер
     bot = Bot(token= '6959535259:AAG9_n3clewzUgapOgGAcejPDRpjQ0f_C7s')
     dp = Dispatcher()
