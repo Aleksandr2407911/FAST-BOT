@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup, Message,
-                           KeyboardButton, ReplyKeyboardMarkup, CallbackQuery)
+                           KeyboardButton, ReplyKeyboardMarkup, CallbackQuery, FSInputFile)
 from aiogram import F
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.state import StatesGroup, State
@@ -94,4 +94,4 @@ async def return_to_category(callback: CallbackQuery):
     await callback.answer() # Убирает мигание инлайн кнопки
     s = callback.data.strip("program_")
     data = database[s]
-    await callback.message.answer_photo(caption= data[0], photo=data[1])
+    await callback.message.answer_photo(caption= data[0], photo= FSInputFile(data[1]))
