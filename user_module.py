@@ -4,10 +4,26 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup, Message,
                            KeyboardButton, ReplyKeyboardMarkup, CallbackQuery)
 from aiogram import F
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.context import FSMContext
 
+
+class AddAdmin(StatesGroup):
+    WaitingForPassword = State()
 
 # инициализируем роутер уровня модуля
 router = Router()
+
+list_of_admins = []
+
+database = {'1 программа': ['1 программа ...', '/Users/vb/Desktop/Screenshot 2024-04-24 at 14.48.36.png'], '2 программа': ['2 программа ...', '/Users/vb/Desktop/Screenshot 2024-04-24 at 14.48.36.png']}
+
+async def build_inline_keyboard_for_products(database):
+    keyboard_list = InlineKeyboardBuilder()
+    for text in database:
+        keyboard_list.add(InlineKeyboardButton(
+            text=text, callback_data= f'program_{text}'))
+    return keyboard_list.adjust(1).as_markup()
 
 # Создаем объект кнопок главного меню
 button_1 = KeyboardButton(text='Программы')
@@ -17,3 +33,65 @@ button_3 = KeyboardButton(text='Социальные сети')
 # Создаем объект клавиатуры и добавляем кнопки главного меню
 Keyboard = ReplyKeyboardMarkup(
     keyboard=[[button_1], [button_2], [button_3]], resize_keyboard=True)
+
+
+button_vk = InlineKeyboardButton(text= 'VK', url= 'https://vk.com')
+button_tg = InlineKeyboardButton(text= 'Telegram', url= 'https://telegram.org')
+keyboard_social = InlineKeyboardMarkup(inline_keyboard= [[button_vk, button_tg]])
+
+button_takepart = InlineKeyboardButton(text= 'Перейти на сайт', url= 'https://www.google.com')
+keyboard_takepart = InlineKeyboardMarkup(inline_keyboard= [[button_takepart]])
+
+
+@router.message(Command(commands= ['start', 'menu']))
+async def process_start_command(message: Message):
+    await message.answer(text='Hi', reply_markup=Keyboard)
+    
+
+@router.message(F.text == 'Программы')
+async def process_menu_command(message: Message):
+    await message.answer(text='Список программ', reply_markup=await build_inline_keyboard_for_products(database))
+
+
+@router.message(F.text == 'Участвовать')
+async def process_menu_command(message: Message):
+    await message.answer(text='Для участия перейдите нажмите кнопку', reply_markup= keyboard_takepart)
+    
+
+@router.message(F.text == 'Социальные сети')
+async def process_menu_command(message: Message):
+    await message.answer(text='Социальные сети', reply_markup= keyboard_social)
+
+
+@router.message(Command(commands= ['admin']))
+async def process_start_command(message: Message, state: FSMContext):
+    await message.answer(text='Введите пароль')
+    await state.set_state(AddAdmin.WaitingForPassword)
+
+
+@router.message(AddAdmin.WaitingForPassword)
+async def process_password_input(message: Message, state: FSMContext):
+    # Здесь вы можете сравнить введенный пароль с ожидаемым
+    expected_password = '1234'
+    entered_password = message.text.strip()
+
+    if entered_password == expected_password:
+        # Добавление пользователя в список администраторов
+        # Например:
+        user_id = message.from_user.id
+        list_of_admins.append(user_id)
+
+        await message.answer(text='Вы добавлены в список администраторов. Нажмите /start_admin')
+    else:
+        await message.answer(text='Неверный пароль')
+
+    # Сброс состояния FSM
+    await state.clear()
+    await message.answer(text= str(list_of_admins[0]))
+    
+@router.callback_query(lambda callback: callback.data.startswith("program_"))
+async def return_to_category(callback: CallbackQuery):
+    await callback.answer() # Убирает мигание инлайн кнопки
+    s = callback.data.strip("program_")
+    data = database[s]
+    await callback.message.answer_photo(caption= data[0], photo=data[1])
