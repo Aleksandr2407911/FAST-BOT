@@ -32,8 +32,7 @@ def compose_dc_for_orders(database):
     print(database)
 
     for i in database:
-        count += 1
-        dc_for_orders[f"prog_{count}"] = i
+        dc_for_orders[f"prog_{i}"] = i
     print(dc_for_orders)
     return dc_for_orders
 
@@ -76,7 +75,7 @@ async def reply_to_order(callback: CallbackQuery, state: FSMContext):
 async def reply_to_changene_name(callback: CallbackQuery, state: FSMContext):
     #await state.update_data(data_product=callback.data)
     await callback.answer(show_alert=True)
-    await callback.message.edit_text(text='Введите новое имя программы', reply_markup=keyboard_cd_order)
+    await callback.message.edit_text(text='Введите новое имя программы')
     await state.set_state(AddAdmin.WaitingForName)
 
 # Ловит имя  текс и добавляет его в database
@@ -84,7 +83,7 @@ async def reply_to_changene_name(callback: CallbackQuery, state: FSMContext):
 async def reply_to_change_text(callback: CallbackQuery, state: FSMContext):
     #await state.update_data(data_product=callback.data)
     await callback.answer(show_alert=True)
-    await callback.message.edit_text(text='Введите новый текст программы', reply_markup=keyboard_cd_order)
+    await callback.message.edit_text(text='Введите новый текст программы')
     await state.set_state(AddAdmin.WaitingForText)
 
 # Ловит картинку и добавляет ее в database
@@ -92,7 +91,7 @@ async def reply_to_change_text(callback: CallbackQuery, state: FSMContext):
 async def reply_to_change_picture(callback: CallbackQuery, state: FSMContext):
     #await state.update_data(data_product=callback.data)
     await callback.answer(show_alert=True)
-    await callback.message.edit_text(text='Отправте новую картинку программы', reply_markup=keyboard_cd_order)
+    await callback.message.edit_text(text='Отправте новую картинку программы')
     await state.set_state(AddAdmin.WaitingForPicture)
 
 
@@ -110,6 +109,7 @@ async def process_password_input(message: Message, state: FSMContext):
     data = await state.get_data()
     # Получаем сохраненное имя продукта из состояния
     name = data.get('data_product')[5:]
+    print(name)
     del database[name]
     database[entered] = []
 
